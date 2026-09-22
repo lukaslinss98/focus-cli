@@ -16,7 +16,9 @@ func TestRenderPreservesUserEntries(t *testing.T) {
 
 	want := original + "\n" + startMarker + "\n" +
 		"127.0.0.1\treddit.com\twww.reddit.com\n" +
-		"127.0.0.1\tyoutube.com\twww.youtube.com\n" + endMarker + "\n"
+		"::1\treddit.com\twww.reddit.com\n" +
+		"127.0.0.1\tyoutube.com\twww.youtube.com\n" +
+		"::1\tyoutube.com\twww.youtube.com\n" + endMarker + "\n"
 	if updated != want {
 		t.Errorf("rendered hosts file:\n%s\nwant:\n%s", updated, want)
 	}

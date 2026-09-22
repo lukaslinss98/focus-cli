@@ -116,8 +116,8 @@ func removeBlock(contents string) string {
 func block(domains []string) string {
 	lines := []string{startMarker}
 	for _, name := range domains {
-		variants := domain.Variants(name)
-		lines = append(lines, "127.0.0.1\t"+strings.Join(variants, "\t"))
+		variants := strings.Join(domain.Variants(name), "\t")
+		lines = append(lines, "127.0.0.1\t"+variants, "::1\t"+variants)
 	}
 	lines = append(lines, endMarker)
 	return strings.Join(lines, "\n")
