@@ -22,7 +22,7 @@ focus off
 focus remove youtube.com
 ```
 
-`add` stores a canonical domain and always manages its `www.` variant too. State is saved at `~/.config/focus/config.json`. Commands that change `/etc/hosts` request `sudo` only for that final synchronization step.
+`add` stores a canonical domain and always manages its `www.` variant too. State is saved at `$XDG_CONFIG_HOME/focus/config.json` (defaults to `~/Library/Application Support/focus/config.json` on macOS). Commands that change `/etc/hosts` request `sudo` only for that final synchronization step.
 
 Focus owns only the section delimited by its markers and leaves every other `/etc/hosts` entry untouched. Before each change it creates a timestamped `/etc/hosts.focus-backup-*` backup. It flushes the macOS DNS cache after a successful hosts-file update.
 

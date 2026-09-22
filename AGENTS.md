@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**focus** is a macOS command-line tool for temporarily blocking chosen websites by managing entries in `/etc/hosts`. It stores configuration at `~/.config/focus/config.json` and uses `sudo` only for the final `/etc/hosts` synchronization step.
+**focus** is a macOS command-line tool for temporarily blocking chosen websites by managing entries in `/etc/hosts`. It stores configuration via `os.UserConfigDir()` / `$XDG_CONFIG_HOME` (defaults to `~/Library/Application Support/focus/config.json` on macOS) and uses `sudo` only for the final `/etc/hosts` synchronization step.
 
 ## Key Commands
 
@@ -19,7 +19,7 @@
 ```
 cmd/focus/main.go          → Entry point, constructs Application
 internal/app/app.go        → Command dispatch, business logic
-internal/config/config.go  → JSON config storage (~/.config/focus/config.json)
+internal/config/config.go  → JSON config storage ($XDG_CONFIG_HOME/focus/config.json or macOS Library default)
 internal/domain/domain.go  → Domain normalization, validation, www variant handling
 internal/hosts/hosts.go    → /etc/hosts manipulation with atomic writes, backups, markers
 ```
@@ -28,7 +28,7 @@ internal/hosts/hosts.go    → /etc/hosts manipulation with atomic writes, backu
 
 1. User runs `focus add youtube.com`
 2. `domain.Normalize` → extracts canonical domain (`youtube.com`), strips `www.`, validates
-3. `config.Store.Load/Save` → persists to `~/.config/focus/config.json`
+3. `config.Store.Load/Save` → persists to `$XDG_CONFIG_HOME/focus/config.json`
 4. If enabled, `syncPrivileged` re-executes binary with `sudo focus __sync <config-path>`
 5. `hosts.Manager.Sync` → reads `/etc/hosts`, renders managed block between markers, atomic write + backup
 6. `flushDNSCache` → runs `dscacheutil -flushcache` and `killall -HUP mDNSResponder`
@@ -97,7 +97,7 @@ Edit `hosts.block`, `hosts.render`, `hosts.locateBlock` in `internal/hosts/hosts
 
 ### Debugging
 - Run without sudo: `focus add ...` (no-op if disabled), `focus list`, `focus status`
-- Inspect config: `cat ~/.config/focus/config.json`
+- Inspect config: `cat $XDG_CONFIG_HOME/focus/config.json` (or `~/Library/Application Support/focus/config.json`)
 - Inspect hosts block: `grep -A 100 "focus managed block" /etc/hosts`
 - Check backups: `ls -la /etc/hosts.focus-backup-*`
 
@@ -113,3 +113,9 @@ Edit `hosts.block`, `hosts.render`, `hosts.locateBlock` in `internal/hosts/hosts
 - Requires macOS (for DNS flush commands and `/etc/hosts` management)
 - Go 1.25+ for building
 - `sudo` access required for `focus on/off/add/remove` when enabled
+
+## Environment Variables
+
+| Variable | Purpose | Default | Used by |
+|----------|---------|---------|---------|
+| `XDG_CONFIG_HOME` | Config directory (replaces `os.UserConfigDir`) | (none) — falls back to platform default | `internal/config/config.go` |

@@ -27,9 +27,13 @@ func NewStore(path string) *Store {
 }
 
 func DefaultPath() (string, error) {
-	directory, err := os.UserConfigDir()
-	if err != nil {
-		return "", fmt.Errorf("find configuration directory: %w", err)
+	directory := os.Getenv("XDG_CONFIG_HOME")
+	if directory == "" {
+		var err error
+		directory, err = os.UserConfigDir()
+		if err != nil {
+			return "", fmt.Errorf("find configuration directory: %w", err)
+		}
 	}
 	return filepath.Join(directory, "focus", fileName), nil
 }
