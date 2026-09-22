@@ -170,7 +170,7 @@ func (a *Application) status(store *config.Store, arguments []string) error {
 	if current.Enabled {
 		state = "on"
 	}
-	fmt.Fprintf(a.out, "Focus: %s\nManaged websites: %d\nHosts block installed: %t\n", state, len(current.Domains), installed)
+	fmt.Fprintf(a.out, "Focus: %s\nManaged websites: %d\nHosts block installed: %t\nConfig: %s\n", state, len(current.Domains), installed, store.Path())
 	return nil
 }
 
