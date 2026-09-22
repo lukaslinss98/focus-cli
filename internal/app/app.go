@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"slices"
 
 	"github.com/lukas/focus/internal/config"
 	"github.com/lukas/focus/internal/domain"
@@ -228,12 +229,7 @@ func defaultStore() (*config.Store, error) {
 }
 
 func contains(domains []string, name string) bool {
-	for _, value := range domains {
-		if value == name {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(domains, name)
 }
 
 func without(domains []string, name string) []string {
