@@ -1,0 +1,9 @@
+# Build artifacts
+/bin/
+/focus
+
+# Test coverage
+coverage.out
+
+# macOS Finder metadata
+.DS_Store
